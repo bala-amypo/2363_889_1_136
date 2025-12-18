@@ -9,8 +9,7 @@ public class Studententity {
     private LocalDate date;
     private float cgpa;
 
-    public Studententity() {
-    }
+   
 
     public Studententity(String name, int id, LocalDate date, float cgpa) {
         this.name = name;
