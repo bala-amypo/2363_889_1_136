@@ -5,7 +5,7 @@ import java.util.List;
 
 public interface RiskAssessmentService {
 
-    RiskAssessmentLog assessRisk(Long loanRequestId);
+    void logAssessment(RiskAssessmentLog log);
 
-    List<RiskAssessmentLog> getByLoanRequestId(Long loanRequestId);
+    List<RiskAssessmentLog> getLogsByRequest(Long requestId);
 }
