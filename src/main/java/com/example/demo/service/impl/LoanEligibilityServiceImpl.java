@@ -1,54 +1,44 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.exception.*;
-import com.example.demo.repository.*;
+import com.example.demo.entity.LoanEligibility;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.repository.LoanEligibilityRepository;
 import com.example.demo.service.LoanEligibilityService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoanEligibilityServiceImpl implements LoanEligibilityService {
-    private final LoanRequestRepository loanRepo;
+
+    private final LoanEligibilityRepository eligibilityRepo;
     private final FinancialProfileRepository profileRepo;
-    private final EligibilityResultRepository resultRepo;
 
-    public LoanEligibilityServiceImpl(LoanRequestRepository l, FinancialProfileRepository p, EligibilityResultRepository r) {
-        this.loanRepo = l; this.profileRepo = p; this.resultRepo = r;
+    public LoanEligibilityServiceImpl(
+            LoanEligibilityRepository eligibilityRepo,
+            FinancialProfileRepository profileRepo) {
+        this.eligibilityRepo = eligibilityRepo;
+        this.profileRepo = profileRepo;
     }
 
     @Override
-    public EligibilityResult evaluateEligibility(Long loanRequestId) {
-        if (resultRepo.findByLoanRequestId(loanRequestId).isPresent()) {
-            throw new BadRequestException("Eligibility already evaluated"); [cite: 122]
-        }
-        LoanRequest req = loanRepo.findById(loanRequestId)
-            .orElseThrow(() -> new ResourceNotFoundException("Loan request not found")); [cite: 128]
-        FinancialProfile prof = profileRepo.findByUserId(req.getUser().getId())
-            .orElseThrow(() -> new ResourceNotFoundException("Financial profile not found")); [cite: 127]
+    public LoanEligibility evaluate(Long profileId) {
 
-        EligibilityResult res = new EligibilityResult();
-        res.setLoanRequest(req);
-        
-        double totalObligations = prof.getMonthlyExpenses() + (prof.getExistingLoanEmi() != null ? prof.getExistingLoanEmi() : 0);
-        double dti = totalObligations / prof.getMonthlyIncome();
+        FinancialProfile profile = profileRepo.findById(profileId)
+                .orElseThrow(() -> new BadRequestException("Financial profile not found"));
 
-        if (prof.getCreditScore() < 600 || dti > 0.4) {
-            res.setIsEligible(false);
-            res.setRiskLevel("HIGH");
-            res.setRejectionReason("High DTI or Low Credit Score");
-            res.setMaxEligibleAmount(0.0);
-            res.setEstimatedEmi(0.0);
+        LoanEligibility eligibility = new LoanEligibility();
+        eligibility.setProfileId(profileId);
+
+        // Simple eligibility logic
+        if (profile.getCreditScore() >= 650 && profile.getAnnualIncome() >= 300000) {
+            eligibility.setEligible(true);
+            eligibility.setMaxLoanAmount(10_00_000.0);
         } else {
-            res.setIsEligible(true);
-            res.setRiskLevel(prof.getCreditScore() > 750 ? "LOW" : "MEDIUM");
-            res.setMaxEligibleAmount(prof.getMonthlyIncome() * 5);
-            res.setEstimatedEmi((res.getMaxEligibleAmount() / req.getTenureMonths()) * 1.1);
+            eligibility.setEligible(false);
+            eligibility.setMaxLoanAmount(0.0);
         }
-        return resultRepo.save(res);
-    }
 
-    @Override
-    public EligibilityResult getByLoanRequestId(Long id) {
-        return resultRepo.findByLoanRequestId(id).orElseThrow(() -> new ResourceNotFoundException("Eligibility result not found")); [cite: 129]
+        return eligibilityRepo.save(eligibility);
     }
 }
