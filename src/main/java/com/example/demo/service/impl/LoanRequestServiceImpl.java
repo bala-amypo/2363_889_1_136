@@ -1,52 +1,39 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.LoanRequest;
-import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.LoanRequestRepository;
-import com.example.demo.repository.UserRepository;
 import com.example.demo.service.LoanRequestService;
 import org.springframework.stereotype.Service;
+
 import java.util.List;
 
 @Service
 public class LoanRequestServiceImpl implements LoanRequestService {
-    private final LoanRequestRepository loanRepo;
-    private final UserRepository userRepo;
 
-    public LoanRequestServiceImpl(LoanRequestRepository loanRepo, UserRepository userRepo) {
-        this.loanRepo = loanRepo;
-        this.userRepo = userRepo;
+    private final LoanRequestRepository repository;
+
+    public LoanRequestServiceImpl(LoanRequestRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public LoanRequest applyForLoan(LoanRequest loanRequest) {
-        if (!userRepo.existsById(loanRequest.getUser().getId())) {
-            throw new ResourceNotFoundException("User not found");
-        }
-        loanRequest.setStatus("PENDING");
-        return loanRepo.save(loanRequest);
+    public LoanRequest submitLoanRequest(LoanRequest request) {
+        return repository.save(request);
     }
 
     @Override
-    public List<LoanRequest> getRequestsByUserId(Long userId) {
-        return loanRepo.findByUserId(userId);
+    public List<LoanRequest> getRequestsByUser(Long userId) {
+        return repository.findByUserId(userId);
     }
 
     @Override
-    public LoanRequest getById(Long id) {
-        return loanRepo.findById(id)
-            .orElseThrow(() -> new ResourceNotFoundException("Loan request not found"));
+    public LoanRequest getRequestById(Long id) {
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
     }
 
     @Override
-    public List<LoanRequest> getAllPendingRequests() {
-        return loanRepo.findByStatus("PENDING");
-    }
-
-    @Override
-    public LoanRequest updateStatus(Long id, String status) {
-        LoanRequest req = getById(id);
-        req.setStatus(status);
-        return loanRepo.save(req);
+    public List<LoanRequest> getAllRequests() {
+        return repository.findAll();
     }
 }
