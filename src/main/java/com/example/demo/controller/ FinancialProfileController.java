@@ -14,13 +14,11 @@ public class FinancialProfileController {
         this.service = service;
     }
 
-    // POST /api/financial-profiles
     @PostMapping
     public FinancialProfile createOrUpdate(@RequestBody FinancialProfile profile) {
         return service.createOrUpdateProfile(profile);
     }
 
-    // GET /api/financial-profiles/user/{userId}
     @GetMapping("/user/{userId}")
     public FinancialProfile getByUser(@PathVariable Long userId) {
         return service.getProfileByUser(userId);

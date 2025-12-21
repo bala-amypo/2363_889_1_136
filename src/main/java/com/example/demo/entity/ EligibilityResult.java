@@ -21,11 +21,9 @@ public class EligibilityResult {
 
     private Instant calculatedAt = Instant.now();
 
-    // ✅ EMPTY CONSTRUCTOR
     public EligibilityResult() {
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
