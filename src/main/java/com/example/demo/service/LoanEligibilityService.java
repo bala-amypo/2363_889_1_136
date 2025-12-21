@@ -6,5 +6,5 @@ public interface LoanEligibilityService {
 
     EligibilityResult evaluateEligibility(Long loanRequestId);
 
-    EligibilityResult getByLoanRequestId(Long loanRequestId);
+    EligibilityResult getResultByRequest(Long loanRequestId);
 }

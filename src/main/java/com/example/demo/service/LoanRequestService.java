@@ -4,9 +4,12 @@ import com.example.demo.entity.LoanRequest;
 import java.util.List;
 
 public interface LoanRequestService {
-    LoanRequest applyForLoan(LoanRequest loanRequest);
-    List<LoanRequest> getRequestsByUserId(Long userId);
-    LoanRequest getById(Long id);
-    List<LoanRequest> getAllPendingRequests();
-    LoanRequest updateStatus(Long id, String status);
+
+    LoanRequest submitLoanRequest(LoanRequest request);
+
+    List<LoanRequest> getRequestsByUser(Long userId);
+
+    LoanRequest getRequestById(Long id);
+
+    List<LoanRequest> getAllRequests();
 }

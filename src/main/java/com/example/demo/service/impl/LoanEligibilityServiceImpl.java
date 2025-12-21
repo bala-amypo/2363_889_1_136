@@ -1,44 +1,68 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.LoanEligibility;
-import com.example.demo.entity.FinancialProfile;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.FinancialProfileRepository;
-import com.example.demo.repository.LoanEligibilityRepository;
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
 import com.example.demo.service.LoanEligibilityService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class LoanEligibilityServiceImpl implements LoanEligibilityService {
 
-    private final LoanEligibilityRepository eligibilityRepo;
-    private final FinancialProfileRepository profileRepo;
+    private final LoanRequestRepository loanRequestRepository;
+    private final FinancialProfileRepository financialProfileRepository;
+    private final EligibilityResultRepository eligibilityResultRepository;
+    private final RiskAssessmentLogRepository riskAssessmentLogRepository;
 
     public LoanEligibilityServiceImpl(
-            LoanEligibilityRepository eligibilityRepo,
-            FinancialProfileRepository profileRepo) {
-        this.eligibilityRepo = eligibilityRepo;
-        this.profileRepo = profileRepo;
+            LoanRequestRepository loanRequestRepository,
+            FinancialProfileRepository financialProfileRepository,
+            EligibilityResultRepository eligibilityResultRepository,
+            RiskAssessmentLogRepository riskAssessmentLogRepository) {
+
+        this.loanRequestRepository = loanRequestRepository;
+        this.financialProfileRepository = financialProfileRepository;
+        this.eligibilityResultRepository = eligibilityResultRepository;
+        this.riskAssessmentLogRepository = riskAssessmentLogRepository;
     }
 
     @Override
-    public LoanEligibility evaluate(Long profileId) {
+    public EligibilityResult evaluateEligibility(Long loanRequestId) {
 
-        FinancialProfile profile = profileRepo.findById(profileId)
-                .orElseThrow(() -> new BadRequestException("Financial profile not found"));
+        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
 
-        LoanEligibility eligibility = new LoanEligibility();
-        eligibility.setProfileId(profileId);
+        FinancialProfile profile = financialProfileRepository
+                .findByUserId(loanRequest.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("Financial profile not found"));
 
-        // Simple eligibility logic
-        if (profile.getCreditScore() >= 650 && profile.getAnnualIncome() >= 300000) {
-            eligibility.setEligible(true);
-            eligibility.setMaxLoanAmount(10_00_000.0);
-        } else {
-            eligibility.setEligible(false);
-            eligibility.setMaxLoanAmount(0.0);
+        double dtiRatio = (profile.getExistingLoanEmi()
+                + profile.getMonthlyExpenses()) / profile.getMonthlyIncome();
+
+        boolean eligible = dtiRatio < 0.5 && profile.getCreditScore() >= 650;
+
+        EligibilityResult result = new EligibilityResult();
+        result.setLoanRequest(loanRequest);
+        result.setIsEligible(eligible);
+        result.setRiskLevel(eligible ? "LOW" : "HIGH");
+
+        if (!eligible) {
+            result.setRejectionReason("High DTI ratio or low credit score");
         }
 
-        return eligibilityRepo.save(eligibility);
+        eligibilityResultRepository.save(result);
+
+        RiskAssessmentLog log = new RiskAssessmentLog();
+        log.setLoanRequestId(loanRequestId);
+        log.setDtiRatio(dtiRatio);
+        log.setCreditCheckStatus("COMPLETED");
+        riskAssessmentLogRepository.save(log);
+
+        return result;
+    }
+
+    @Override
+    public EligibilityResult getResultByRequest(Long loanRequestId) {
+        return eligibilityResultRepository.findByLoanRequestId(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Eligibility result not found"));
     }
 }
