@@ -1,52 +1,27 @@
-package com.example.project.entity;
+package com.example.demo.entity;
 
-import java.time.LocalDate;
+import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
-public class Studententity {
+@Entity
+@Table(name = "users")
+public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String fullName;
+    @Column(unique = true)
+    private String email;
+    private String password;
+    private String role = "CUSTOMER";
+    private LocalDateTime createdAt;
 
-    private String name;
-    private int id;
-    private LocalDate date;
-    private float cgpa;
+    @PrePersist
+    protected void onCreate() { this.createdAt = LocalDateTime.now(); }
 
-   
-
-    public Studententity(String name, int id, LocalDate date, float cgpa) {
-        this.name = name;
-        this.id = id;
-        this.date = date;
-        this.cgpa = cgpa;
+    public User() {}
+    public User(Long id, String fullName, String email, String password, String role) {
+        this.id = id; this.fullName = fullName; this.email = email; this.password = password; this.role = role;
     }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public int getID() {
-        return id;
-    }
-
-    public void setID(int id) {
-        this.id = id;
-    }
-
-    public LocalDate getDate() {
-        return date;
-    }
-
-    public void setDate(LocalDate date) {
-        this.date = date;
-    }
-
-    public float getCgpa() {
-        return cgpa;
-    }
-
-    public void setCgpa(float cgpa) {
-        this.cgpa = cgpa;
-    }
+    // Getters and Setters omitted for brevity
 }
