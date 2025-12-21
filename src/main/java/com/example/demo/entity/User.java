@@ -1,27 +1,27 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.*;
+import java.time.Instant;
 
 @Entity
-@Table(name = "users")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
+@Table(name = "users", uniqueConstraints = @UniqueConstraint(columnNames = "email"))
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String fullName;
-    @Column(unique = true)
+
+    @Column(nullable = false, unique = true)
     private String email;
+
     private String password;
+
     private String role = "CUSTOMER";
-    private LocalDateTime createdAt;
 
-    @PrePersist
-    protected void onCreate() { this.createdAt = LocalDateTime.now(); }
-
-    public User() {}
-    public User(Long id, String fullName, String email, String password, String role) {
-        this.id = id; this.fullName = fullName; this.email = email; this.password = password; this.role = role;
-    }
-    // Getters and Setters omitted for brevity
+    private Instant createdAt = Instant.now();
 }

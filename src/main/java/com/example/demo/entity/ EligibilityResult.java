@@ -1,25 +1,26 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
+import lombok.*;
+import java.time.Instant;
 
 @Entity
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class EligibilityResult {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @OneToOne
     private LoanRequest loanRequest;
+
     private Boolean isEligible;
     private Double maxEligibleAmount;
     private Double estimatedEmi;
     private String riskLevel;
     private String rejectionReason;
-    private LocalDateTime calculatedAt;
 
-    @PrePersist
-    protected void onCreate() { this.calculatedAt = LocalDateTime.now(); }
-
-    public EligibilityResult() {}
-    // Getters and Setters
+    private Instant calculatedAt = Instant.now();
 }
