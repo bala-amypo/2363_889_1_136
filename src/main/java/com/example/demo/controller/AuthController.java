@@ -1,39 +1,39 @@
 package com.example.demo.controller;
 
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
-
-import com.example.demo.entity.Studententity;
-import com.example.demo.service.Studentservice;
+import com.example.demo.dto.AuthRequest;
+import com.example.demo.dto.AuthResponse;
+import com.example.demo.entity.User;
+import com.example.demo.service.UserService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
-public class Studentcontroller {
-    @Autowired
-    Studentservice src;
-    @PatchMapping("/post")
-    public Studententity postdata(@RequestBody Studententity st){ 
-        return src.savedata(st);
+@RequestMapping("/auth")
+public class AuthController {
+    private final UserService userService;
+
+    public AuthController(UserService userService) {
+        this.userService = userService;
     }
-    @GetMapping("/get")
-    public List<Studententity> getdata(){
-        return src.retdata();
+
+    @PostMapping("/register")
+    public ResponseEntity<User> register(@RequestBody User user) {
+        return ResponseEntity.ok(userService.register(user));
     }
-    @GetMapping("/getid/{id}")
-    public Studententity getIdVal(@PathVariable int id){
-        return src.id(id);
-    }
-    @PutMapping("/put/{id}")
-    public Studententity up(){
-        return src.update(id,st);
-    }
-     public Studententity deleteStudent(@PathVariable int id){
-          return src.deleteStudent(id);
+
+    @PostMapping("/login")
+    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+        // In a real impl, this would call authenticationManager.authenticate()
+        // and generate a JWT using JwtUtil.
+        AuthResponse response = new AuthResponse();
+        User user = userService.findByEmail(request.email);
+        if (user != null) {
+            response.userId = user.getId();
+            response.email = user.getEmail();
+            response.fullName = user.getFullName();
+            response.role = user.getRole();
+            response.token = "dummy-jwt-token"; 
+        }
+        return ResponseEntity.ok(response);
     }
 }
