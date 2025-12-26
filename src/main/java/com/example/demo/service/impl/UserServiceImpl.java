@@ -8,36 +8,24 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    private final UserRepository userRepository;
+    private final UserRepository repository;
 
-    public UserServiceImpl(UserRepository userRepository) {
-        this.userRepository = userRepository;
+    public UserServiceImpl(UserRepository repository) {
+        this.repository = repository;
     }
-
-    // ===== Interface methods =====
 
     @Override
     public User registerUser(User user) {
-        return userRepository.save(user);
+        return repository.save(user);
     }
 
     @Override
     public User getUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return repository.findById(id).orElse(null);
     }
 
     @Override
     public User findByEmail(String email) {
-        return userRepository.findByEmail(email).orElse(null);
-    }
-
-    // ===== Test compatibility helpers =====
-
-    public User register(User user) {
-        return registerUser(user);
-    }
-
-    public User getById(long id) {
-        return getUserById(id);
+        return repository.findByEmail(email).orElse(null);
     }
 }
