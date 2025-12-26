@@ -1,27 +1,22 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.FinancialProfile;
-import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.entity.EligibilityResult;
+import com.example.demo.repository.EligibilityResultRepository;
 import com.example.demo.service.EligibilityService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EligibilityServiceImpl implements EligibilityService {
 
-    private final FinancialProfileRepository financialProfileRepository;
+    private final EligibilityResultRepository repository;
 
-    public EligibilityServiceImpl(FinancialProfileRepository financialProfileRepository) {
-        this.financialProfileRepository = financialProfileRepository;
+    public EligibilityServiceImpl(EligibilityResultRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public boolean checkEligibility(Long userId) {
-
-        FinancialProfile profile = financialProfileRepository
-                .findByUser_Id(userId)   // ✅ FIXED HERE
-                .orElseThrow(() ->
-                        new RuntimeException("Financial profile not found"));
-
-        return profile.getMonthlyIncome() > 30000;
+    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
+        return repository.findByLoanRequestId(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Eligibility result not found"));
     }
 }

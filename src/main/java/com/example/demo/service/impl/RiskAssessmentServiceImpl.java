@@ -1,29 +1,30 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.FinancialProfile;
-import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.entity.RiskAssessment;
+import com.example.demo.repository.RiskAssessmentRepository;
 import com.example.demo.service.RiskAssessmentService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
-    private final FinancialProfileRepository financialProfileRepository;
+    private final RiskAssessmentRepository repository;
 
-    public RiskAssessmentServiceImpl(FinancialProfileRepository financialProfileRepository) {
-        this.financialProfileRepository = financialProfileRepository;
+    public RiskAssessmentServiceImpl(RiskAssessmentRepository repository) {
+        this.repository = repository;
     }
 
     @Override
-    public String assessRisk(Long userId) {
+    public RiskAssessment assessRisk(Long loanRequestId) {
+        RiskAssessment risk = new RiskAssessment();
+        risk.setLoanRequestId(loanRequestId);
+        risk.setRiskLevel("LOW");
+        return repository.save(risk);
+    }
 
-        FinancialProfile profile = financialProfileRepository
-                .findByUser_Id(userId)   // ✅ FIXED HERE
-                .orElseThrow(() ->
-                        new RuntimeException("Financial profile not found"));
-
-        if (profile.getCreditScore() >= 750) return "LOW";
-        if (profile.getCreditScore() >= 650) return "MEDIUM";
-        return "HIGH";
+    @Override
+    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
+        return repository.findByLoanRequestId(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Risk not found"));
     }
 }
