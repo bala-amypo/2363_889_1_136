@@ -1,45 +1,9 @@
-package com.example.demo.entity;
+private int creditScore;
 
-import jakarta.persistence.*;
+public int getCreditScore() {
+    return creditScore;
+}
 
-@Entity
-public class FinancialProfile {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    private double monthlyIncome;
-    private double emi;
-
-    @OneToOne
-    private User user;
-
-    public Long getId() {
-        return id;
-    }
-
-    public double getMonthlyIncome() {
-        return monthlyIncome;
-    }
-
-    public void setMonthlyIncome(double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
-
-    public double getEmi() {
-        return emi;
-    }
-
-    public void setEmi(double emi) {
-        this.emi = emi;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+public void setCreditScore(int creditScore) {
+    this.creditScore = creditScore;
 }
