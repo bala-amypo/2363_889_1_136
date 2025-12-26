@@ -19,7 +19,7 @@ public class LoanRequestServiceImpl implements LoanRequestService {
 
     @Override
     public LoanRequest submitLoanRequest(LoanRequest request) {
-        request.setStatus(LoanRequest.Status.PENDING);
+        request.setStatus(LoanRequest.Status.PENDING); 
         request.setSubmittedAt(LocalDateTime.now());
         return repository.save(request);
     }

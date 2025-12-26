@@ -6,10 +6,8 @@ import java.time.LocalDateTime;
 @Entity
 public class LoanRequest {
 
-    public enum Status { SUBMITTED, APPROVED, REJECTED }
-
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private double requestedAmount;
@@ -19,12 +17,55 @@ public class LoanRequest {
 
     private LocalDateTime submittedAt;
 
-    public double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(double v) { this.requestedAmount = v; }
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    public Status getStatus() { return status; }
-    public void setStatus(Status s) { this.status = s; }
+    // ===== ENUM (THIS FIXES YOUR ERROR) =====
+    public enum Status {
+        PENDING,
+        APPROVED,
+        REJECTED
+    }
 
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
-    public void setSubmittedAt(LocalDateTime t) { this.submittedAt = t; }
+    // ===== GETTERS & SETTERS =====
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public double getRequestedAmount() {
+        return requestedAmount;
+    }
+
+    public void setRequestedAmount(double requestedAmount) {
+        this.requestedAmount = requestedAmount;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public LocalDateTime getSubmittedAt() {
+        return submittedAt;
+    }
+
+    public void setSubmittedAt(LocalDateTime submittedAt) {
+        this.submittedAt = submittedAt;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
