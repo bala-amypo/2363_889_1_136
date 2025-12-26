@@ -1,7 +1,8 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.*;
-import com.example.demo.repository.*;
+import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.EligibilityService;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,7 @@ public class EligibilityServiceImpl implements EligibilityService {
 
     public EligibilityServiceImpl(
             LoanRequestRepository loanRequestRepository,
-            FinancialProfileRepository financialProfileRepository
-    ) {
+            FinancialProfileRepository financialProfileRepository) {
         this.loanRequestRepository = loanRequestRepository;
         this.financialProfileRepository = financialProfileRepository;
     }
@@ -22,24 +22,22 @@ public class EligibilityServiceImpl implements EligibilityService {
     @Override
     public EligibilityResult checkEligibility(Long loanRequestId) {
 
-        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId).orElseThrow();
-        FinancialProfile profile =
-                financialProfileRepository.findByUserId(loanRequest.getUser().getId());
+        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
 
-        double emi = loanRequest.getAmount() / loanRequest.getTenureMonths();
+        FinancialProfile profile = financialProfileRepository
+                .findByUserId(loanRequest.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("Financial profile not found"));
+
+        double calculatedEmi = loanRequest.getEmi();
         double maxAllowedEmi = profile.getMonthlyIncome() * 0.4;
 
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequestId(loanRequestId);
-        result.setCalculatedEmi(emi);
+        result.setCalculatedEmi(calculatedEmi);
         result.setMaxAllowedEmi(maxAllowedEmi);
-        result.setEligible((emi + profile.getEmi()) <= maxAllowedEmi);
+        result.setEligible(calculatedEmi <= maxAllowedEmi);
 
         return result;
-    }
-
-    @Override
-    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
-        return null;
     }
 }
