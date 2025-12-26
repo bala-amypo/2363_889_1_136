@@ -3,41 +3,36 @@ package com.example.demo.security;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.Map;
 
-@Component
 public class JwtUtil {
 
-    private static final String SECRET = "mysecretkeymysecretkeymysecretkey";
-    private static final long EXPIRATION = 60 * 60 * 1000;
+    private final String secret;
+    private final int expiration;
 
-    public String generateToken(String username) {
+    // ✅ REQUIRED BY TESTS
+    public JwtUtil(String secret, int expiration) {
+        this.secret = secret;
+        this.expiration = expiration;
+    }
+
+    // ✅ REQUIRED BY TESTS
+    public String generateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder()
-                .setSubject(username)
+                .setClaims(claims)
+                .setSubject(subject)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION))
-                .signWith(SignatureAlgorithm.HS256, SECRET.getBytes())
+                .setExpiration(new Date(System.currentTimeMillis() + expiration * 1000L))
+                .signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
     }
 
-    public boolean validateToken(String token) {
-        try {
-            getClaims(token);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-
-    public String extractUsername(String token) {
-        return getClaims(token).getSubject();
-    }
-
-    private Claims getClaims(String token) {
+    // ✅ REQUIRED BY TESTS
+    public Claims getAllClaims(String token) {
         return Jwts.parser()
-                .setSigningKey(SECRET.getBytes())
+                .setSigningKey(secret)
                 .parseClaimsJws(token)
                 .getBody();
     }
