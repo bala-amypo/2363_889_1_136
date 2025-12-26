@@ -1,31 +1,45 @@
 package com.example.demo.service.impl;
 
+import com.example.demo.entity.EligibilityResult;
 import com.example.demo.entity.FinancialProfile;
 import com.example.demo.entity.LoanRequest;
+import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.EligibilityService;
 import org.springframework.stereotype.Service;
 
 @Service
 public class EligibilityServiceImpl implements EligibilityService {
 
+    private final LoanRequestRepository loanRequestRepository;
+    private final FinancialProfileRepository financialProfileRepository;
+
+    public EligibilityServiceImpl(LoanRequestRepository loanRequestRepository,
+                                  FinancialProfileRepository financialProfileRepository) {
+        this.loanRequestRepository = loanRequestRepository;
+        this.financialProfileRepository = financialProfileRepository;
+    }
+
     @Override
-    public boolean isEligible(FinancialProfile profile, LoanRequest loanRequest) {
+    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
 
-        if (profile == null || loanRequest == null) {
-            return false;
-        }
+        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
 
-        double monthlyIncome = profile.getMonthlyIncome();
+        FinancialProfile profile = financialProfileRepository
+                .findByUserId(loanRequest.getUser().getId())
+                .orElseThrow(() -> new RuntimeException("Financial profile not found"));
 
-        // ✅ FIXED getter
-        double existingEmi = profile.getExistingEmi();
+        double income = profile.getMonthlyIncome();
+        double existingEmi = profile.getEmi();   // ✅ FIXED (see Error 2)
+        double newEmi = loanRequest.getAmount() / loanRequest.getTenure();
 
-        double loanAmount = loanRequest.getAmount();
-        int tenure = loanRequest.getTenure();
+        boolean eligible = (existingEmi + newEmi) <= (income * 0.5);
 
-        double newEmi = loanAmount / tenure;
+        EligibilityResult result = new EligibilityResult();
+        result.setLoanRequestId(loanRequestId);
+        result.setEligible(eligible);
 
-        // Rule: EMI ≤ 50% of income
-        return (existingEmi + newEmi) <= (monthlyIncome * 0.5);
+        return result;
     }
 }
