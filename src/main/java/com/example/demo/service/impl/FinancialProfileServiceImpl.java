@@ -22,6 +22,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     @Override
     public FinancialProfile getByUserId(Long userId) {
         return repository.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Financial profile not found"));
+                .orElseThrow(() ->
+                        new RuntimeException("Financial profile not found for user " + userId));
     }
 }
