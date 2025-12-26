@@ -7,13 +7,14 @@ import com.example.demo.service.LoanRequestService;
 
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 public class LoanRequestServiceImpl implements LoanRequestService {
 
     private final LoanRequestRepository repository;
     private final UserRepository userRepository;
 
-    // REQUIRED by tests (2-arg constructor)
     public LoanRequestServiceImpl(
             LoanRequestRepository repository,
             UserRepository userRepository
@@ -22,14 +23,18 @@ public class LoanRequestServiceImpl implements LoanRequestService {
         this.userRepository = userRepository;
     }
 
-    // Used by tests
-    public LoanRequest submitRequest(LoanRequest request) {
+    @Override
+    public LoanRequest submitLoanRequest(LoanRequest request) {
         return repository.save(request);
     }
 
-    // REQUIRED by LoanRequestService interface
     @Override
     public LoanRequest getRequestById(Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    @Override
+    public List<LoanRequest> getRequestsByUser(Long userId) {
+        return repository.findByUserId(userId);
     }
 }

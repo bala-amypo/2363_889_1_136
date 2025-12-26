@@ -15,17 +15,16 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
     }
 
-    // Used by tests
-    public User register(User user) {
+    @Override
+    public User registerUser(User user) {
         return repository.save(user);
     }
 
-    // Used by tests
-    public User getById(long id) {
+    @Override
+    public User getUserById(Long id) {
         return repository.findById(id).orElse(null);
     }
 
-    // REQUIRED by UserService interface
     @Override
     public User findByEmail(String email) {
         return repository.findByEmail(email).orElse(null);

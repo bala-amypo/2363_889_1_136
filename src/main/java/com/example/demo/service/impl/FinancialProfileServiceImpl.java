@@ -13,7 +13,6 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     private final FinancialProfileRepository repository;
     private final UserRepository userRepository;
 
-    // REQUIRED by tests (2-arg constructor)
     public FinancialProfileServiceImpl(
             FinancialProfileRepository repository,
             UserRepository userRepository
@@ -22,12 +21,11 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         this.userRepository = userRepository;
     }
 
-    // Used by tests
-    public FinancialProfile createOrUpdate(FinancialProfile profile) {
+    @Override
+    public FinancialProfile createOrUpdateProfile(FinancialProfile profile) {
         return repository.save(profile);
     }
 
-    // REQUIRED by FinancialProfileService interface
     @Override
     public FinancialProfile getProfileByUser(Long userId) {
         return repository.findByUserId(userId).orElse(null);
