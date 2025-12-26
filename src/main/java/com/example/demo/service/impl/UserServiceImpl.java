@@ -17,12 +17,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User registerUser(User user) {
+    public User registerUser(User) {
         return repository.save(user);
     }
 
     @Override
-    public User getUserById(Long id) {
+    public User getById(Long) {
         return repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("User not found"));
