@@ -1,47 +1,57 @@
 package com.example.demo.service.impl;
 
 import com.example.demo.entity.FinancialProfile;
+import com.example.demo.exception.BadRequestException;
+import com.example.demo.exception.ResourceNotFoundException;
 import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FinancialProfileService;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 @Service
 public class FinancialProfileServiceImpl implements FinancialProfileService {
 
-    private final FinancialProfileRepository repository;
+    private final FinancialProfileRepository profileRepository;
+    private final UserRepository userRepository;
 
-    public FinancialProfileServiceImpl(FinancialProfileRepository repository) {
-        this.repository = repository;
+    public FinancialProfileServiceImpl(FinancialProfileRepository profileRepository,
+                                       UserRepository userRepository) {
+        this.profileRepository = profileRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
-    public FinancialProfile createOrUpdateProfile(FinancialProfile profile) {
+    public FinancialProfile createOrUpdate(FinancialProfile profile) {
 
-        Long userId = profile.getUser().getId();
+        if (profile.getCreditScore() < 300 || profile.getCreditScore() > 900) {
+            throw new BadRequestException("creditScore");
+        }
 
-        Optional<FinancialProfile> existing =
-                repository.findByUser_Id(userId);
+        // ✅ Update existing profile for same user
+        FinancialProfile existing = profileRepository
+                .findByUserId(profile.getUser().getId())
+                .orElse(null);
 
-        if (existing.isPresent()) {
-            FinancialProfile fp = existing.get();
-            fp.setMonthlyIncome(profile.getMonthlyIncome());
-            fp.setMonthlyExpenses(profile.getMonthlyExpenses());
-            fp.setExistingLoanEmi(profile.getExistingLoanEmi());
-            fp.setSavingsBalance(profile.getSavingsBalance());
-            fp.setLastUpdatedAt(LocalDateTime.now());
-            return repository.save(fp);
+        if (existing != null) {
+            existing.setMonthlyIncome(profile.getMonthlyIncome());
+            existing.setMonthlyExpenses(profile.getMonthlyExpenses());
+            existing.setExistingLoanEmi(profile.getExistingLoanEmi());
+            existing.setCreditScore(profile.getCreditScore());
+            existing.setSavingsBalance(profile.getSavingsBalance());
+            existing.setLastUpdatedAt(LocalDateTime.now());
+            return profileRepository.save(existing);
         }
 
         profile.setLastUpdatedAt(LocalDateTime.now());
-        return repository.save(profile);
+        return profileRepository.save(profile);
     }
 
     @Override
-    public FinancialProfile getProfileByUser(Long userId) {
-        return repository.findByUser_Id(userId)
-                .orElseThrow(() -> new RuntimeException("Financial profile not found"));
+    public FinancialProfile getByUserId(Long userId) {
+        return profileRepository.findByUserId(userId)
+                .orElseThrow(() ->
+                        new ResourceNotFoundException("Financial profile not found"));
     }
 }
