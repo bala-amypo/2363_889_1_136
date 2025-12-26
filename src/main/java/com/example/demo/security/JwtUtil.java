@@ -4,42 +4,46 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
+@Component
 public class JwtUtil {
 
-    private final Key key;
-    private final long validityInMs;
+    private static final Key SECRET_KEY = Keys.secretKeyFor(SignatureAlgorithm.HS256);
+    private static final long EXPIRATION_TIME = 1000 * 60 * 60; // 1 hour
 
-    // REQUIRED BY TESTS
-    public JwtUtil(String secret, long validityInMs) {
-        this.key = Keys.hmacShaKeyFor(secret.getBytes());
-        this.validityInMs = validityInMs;
-    }
-
-    public String generateToken(Map<String, Object> claims, String subject) {
-
-        Date now = new Date();
-        Date expiry = new Date(now.getTime() + validityInMs);
-
+    // ✅ MAIN METHOD (used by tests & controllers)
+    public String generateToken(Map<String, Object> claims, String username) {
         return Jwts.builder()
                 .setClaims(claims)
-                .setSubject(subject)
-                .setIssuedAt(now)
-                .setExpiration(expiry)
-                .signWith(key, SignatureAlgorithm.HS256)
+                .setSubject(username)
+                .setIssuedAt(new Date(System.currentTimeMillis()))
+                .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
+                .signWith(SECRET_KEY)
                 .compact();
     }
 
+    // ✅ OVERLOADED METHOD (FIXES YOUR ERROR)
+    public String generateToken(String username) {
+        return generateToken(new HashMap<>(), username);
+    }
+
+    // ✅ Used by filters/tests
     public Claims getAllClaims(String token) {
         return Jwts.parserBuilder()
-                .setSigningKey(key)
+                .setSigningKey(SECRET_KEY)
                 .build()
                 .parseClaimsJws(token)
                 .getBody();
+    }
+
+    public String extractUsername(String token) {
+        return getAllClaims(token).getSubject();
     }
 
     public boolean validateToken(String token) {
@@ -49,13 +53,5 @@ public class JwtUtil {
         } catch (Exception e) {
             return false;
         }
-    }
-
-    public String getEmail(String token) {
-        return getAllClaims(token).getSubject();
-    }
-
-    public String getRole(String token) {
-        return getAllClaims(token).get("role", String.class);
     }
 }
