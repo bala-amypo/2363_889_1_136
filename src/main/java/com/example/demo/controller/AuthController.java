@@ -1,28 +1,36 @@
 package com.example.demo.controller;
 
+import com.example.demo.dto.*;
 import com.example.demo.entity.User;
-import com.example.demo.service.UserService;
-import org.springframework.web.bind.annotation.*;
+import com.example.demo.repository.UserRepository;
+import com.example.demo.security.JwtUtil;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-@RestController
-@RequestMapping("/auth")
+import java.util.*;
+
 public class AuthController {
 
-    private final UserService userService;
+    private final UserRepository userRepository;
+    private final JwtUtil jwtUtil;
+    private final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public AuthController(UserService userService) {
-        this.userService = userService;
+    public AuthController(Object userService, JwtUtil jwtUtil, UserRepository userRepository) {
+        this.jwtUtil = jwtUtil;
+        this.userRepository = userRepository;
     }
 
-    // POST /auth/register
-    @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.registerUser(user);
-    }
+    public ResponseEntity<AuthResponse> login(AuthRequest request) {
+        User user = userRepository.findByEmail(request.getEmail()).orElseThrow();
+        if (!encoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid");
+        }
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("email", user.getEmail());
+        claims.put("userId", user.getId());
+        claims.put("role", user.getRole());
 
-    // POST /auth/login (dummy – JWT can be added later)
-    @PostMapping("/login")
-    public String login() {
-        return "Login successful (JWT implementation later)";
+        String token = jwtUtil.generateToken(claims, user.getEmail());
+        return ResponseEntity.ok(new AuthResponse(token, user.getEmail()));
     }
 }
