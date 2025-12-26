@@ -1,8 +1,9 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.Eligibility;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.entity.LoanRequest;
 
 public interface EligibilityService {
 
-    Eligibility getByLoanRequestId(Long loanRequestId);
+    boolean isEligible(FinancialProfile profile, LoanRequest loanRequest);
 }
