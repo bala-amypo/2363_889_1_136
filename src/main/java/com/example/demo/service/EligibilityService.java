@@ -5,4 +5,6 @@ import com.example.demo.entity.EligibilityResult;
 public interface EligibilityService {
 
     EligibilityResult getByLoanRequestId(Long loanRequestId);
+
+    EligibilityResult evaluateEligibility(Long loanRequestId);
 }

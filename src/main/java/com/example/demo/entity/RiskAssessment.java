@@ -11,11 +11,12 @@ public class RiskAssessment {
 
     private Long loanRequestId;
 
-    private Double dtiRatio;
+    private String riskLevel;
 
-    private Double riskScore;
+    private double riskScore;
 
-    // getters & setters
+    // ✅ REQUIRED GETTERS & SETTERS
+
     public Long getId() {
         return id;
     }
@@ -32,19 +33,19 @@ public class RiskAssessment {
         this.loanRequestId = loanRequestId;
     }
 
-    public Double getDtiRatio() {
-        return dtiRatio;
+    public String getRiskLevel() {
+        return riskLevel;
     }
 
-    public void setDtiRatio(Double dtiRatio) {
-        this.dtiRatio = dtiRatio;
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
     }
 
-    public Double getRiskScore() {
+    public double getRiskScore() {
         return riskScore;
     }
 
-    public void setRiskScore(Double riskScore) {
+    public void setRiskScore(double riskScore) {
         this.riskScore = riskScore;
     }
 }

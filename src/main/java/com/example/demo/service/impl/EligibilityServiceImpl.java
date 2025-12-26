@@ -17,6 +17,15 @@ public class EligibilityServiceImpl implements EligibilityService {
     @Override
     public EligibilityResult getByLoanRequestId(Long loanRequestId) {
         return repository.findByLoanRequestId(loanRequestId)
-                .orElseThrow(() -> new RuntimeException("Eligibility result not found"));
+                .orElseThrow(() -> new RuntimeException("Eligibility not found"));
+    }
+
+    @Override
+    public EligibilityResult evaluateEligibility(Long loanRequestId) {
+        EligibilityResult result = new EligibilityResult();
+        result.setLoanRequestId(loanRequestId);
+        result.setEligible(true);
+        result.setMaxEligibleAmount(500000);
+        return repository.save(result);
     }
 }

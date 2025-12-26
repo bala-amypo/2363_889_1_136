@@ -49,7 +49,7 @@ public class AuthController {
         claims.put("role", user.getRole());
         claims.put("userId", user.getId());
 
-       String token = jwtUtil.generateToken(user.getUsername());
+       String token = jwtUtil.generateToken(user.getEmail());
 
         AuthResponse response = new AuthResponse(
                 token,
