@@ -1,54 +1,84 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "financial_profiles")
 public class FinancialProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    // 🔗 Link to User
     @OneToOne
+    @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-    private Double monthlyIncome;
-    private Double monthlyExpenses;
-    private Double existingLoanEmi;
-    private Integer creditScore;
-    private Double savingsBalance;
+    // 💰 Monthly income
+    @Column(nullable = false)
+    private double monthlyIncome;
 
-    private LocalDateTime lastUpdatedAt;
+    // 💳 Existing EMI (VERY IMPORTANT)
+    @Column(nullable = false)
+    private double emi;
 
-    public FinancialProfile() {}
+    // 🏦 Credit score
+    @Column(nullable = false)
+    private int creditScore;
 
-    @PrePersist
-    @PreUpdate
-    public void updateTimestamp() {
-        this.lastUpdatedAt = LocalDateTime.now();
+    // ✅ REQUIRED: Default constructor (Spring/JPA)
+    public FinancialProfile() {
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    // Optional constructor
+    public FinancialProfile(User user, double monthlyIncome, double emi, int creditScore) {
+        this.user = user;
+        this.monthlyIncome = monthlyIncome;
+        this.emi = emi;
+        this.creditScore = creditScore;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    // -------------------- GETTERS & SETTERS --------------------
 
-    public Double getMonthlyIncome() { return monthlyIncome; }
-    public void setMonthlyIncome(Double monthlyIncome) { this.monthlyIncome = monthlyIncome; }
+    public Long getId() {
+        return id;
+    }
 
-    public Double getMonthlyExpenses() { return monthlyExpenses; }
-    public void setMonthlyExpenses(Double monthlyExpenses) { this.monthlyExpenses = monthlyExpenses; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Double getExistingLoanEmi() { return existingLoanEmi; }
-    public void setExistingLoanEmi(Double existingLoanEmi) { this.existingLoanEmi = existingLoanEmi; }
+    public User getUser() {
+        return user;
+    }
 
-    public Integer getCreditScore() { return creditScore; }
-    public void setCreditScore(Integer creditScore) { this.creditScore = creditScore; }
+    public void setUser(User user) {
+        this.user = user;
+    }
 
-    public Double getSavingsBalance() { return savingsBalance; }
-    public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
+    public double getMonthlyIncome() {
+        return monthlyIncome;
+    }
 
-    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
+    public void setMonthlyIncome(double monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
+    }
+
+    // 🔥 THIS FIXES ALL EMI-RELATED ERRORS
+    public double getEmi() {
+        return emi;
+    }
+
+    public void setEmi(double emi) {
+        this.emi = emi;
+    }
+
+    public int getCreditScore() {
+        return creditScore;
+    }
+
+    public void setCreditScore(int creditScore) {
+        this.creditScore = creditScore;
+    }
 }
