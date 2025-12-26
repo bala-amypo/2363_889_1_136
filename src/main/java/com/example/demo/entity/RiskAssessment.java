@@ -9,23 +9,31 @@ public class RiskAssessment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    private LoanRequest loanRequest;
+    private Long loanRequestId;
 
-    private Double riskScore;
-    private Double dtiRatio;
+    private String riskLevel;
 
-    public RiskAssessment() {}
+    public Long getId() {
+        return id;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Long getLoanRequestId() {
+        return loanRequestId;
+    }
 
-    public LoanRequest getLoanRequest() { return loanRequest; }
-    public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
+    public String getRiskLevel() {
+        return riskLevel;
+    }
 
-    public Double getRiskScore() { return riskScore; }
-    public void setRiskScore(Double riskScore) { this.riskScore = riskScore; }
+    public void setId(Long id) {
+        this.id = id;
+    }
 
-    public Double getDtiRatio() { return dtiRatio; }
-    public void setDtiRatio(Double dtiRatio) { this.dtiRatio = dtiRatio; }
+    public void setLoanRequestId(Long loanRequestId) {
+        this.loanRequestId = loanRequestId;
+    }
+
+    public void setRiskLevel(String riskLevel) {
+        this.riskLevel = riskLevel;
+    }
 }

@@ -6,6 +6,5 @@ public interface EligibilityService {
 
     EligibilityResult checkEligibility(Long loanRequestId);
 
-    // 🔴 ADD THIS METHOD (required by controller)
     EligibilityResult getByLoanRequestId(Long loanRequestId);
 }
