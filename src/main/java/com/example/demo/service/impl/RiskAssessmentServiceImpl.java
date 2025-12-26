@@ -1,56 +1,30 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
-import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.*;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.entity.LoanRequest;
 import com.example.demo.service.RiskAssessmentService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
-    private final LoanRequestRepository loanRequestRepository;
-    private final FinancialProfileRepository financialProfileRepository;
-    private final RiskAssessmentRepository riskAssessmentRepository;
-
-    public RiskAssessmentServiceImpl(
-            LoanRequestRepository loanRequestRepository,
-            FinancialProfileRepository financialProfileRepository,
-            RiskAssessmentRepository riskAssessmentRepository) {
-
-        this.loanRequestRepository = loanRequestRepository;
-        this.financialProfileRepository = financialProfileRepository;
-        this.riskAssessmentRepository = riskAssessmentRepository;
-    }
-
     @Override
-    public RiskAssessment assessRisk(Long loanRequestId) {
+    public String assessRisk(FinancialProfile fp, LoanRequest request) {
 
-        if (riskAssessmentRepository.findByLoanRequestId(loanRequestId).isPresent()) {
-            throw new BadRequestException("Risk already exists");
+        double income = fp.getMonthlyIncome();
+        double existingEmi = fp.getEmi();   // ✅ FIXED
+        double newEmi = request.getEmi();
+
+        double emiRatio = (existingEmi + newEmi) / income;
+
+        if (fp.getCreditScore() < 600 || emiRatio > 0.6) {
+            return "HIGH_RISK";
         }
 
-        LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
-                .orElseThrow(() -> new BadRequestException("Loan not found"));
+        if (fp.getCreditScore() < 700 || emiRatio > 0.4) {
+            return "MEDIUM_RISK";
+        }
 
-        FinancialProfile fp = financialProfileRepository
-                .findByUserId(loanRequest.getUser().getId())
-                .orElseThrow(() -> new BadRequestException("Profile not found"));
-
-        double income = fp.getMonthlyIncome() != null ? fp.getMonthlyIncome() : 0.0;
-        double emi = fp.getExistingLoanEmi() != null ? fp.getExistingLoanEmi() : 0.0;
-
-        double dti = income == 0 ? 0.0 : emi / income;
-
-        RiskAssessment ra = new RiskAssessment();
-        ra.setLoanRequest(loanRequest);
-        ra.setDtiRatio(dti);
-        ra.setRiskScore(Math.min(100.0, Math.max(0.0, dti * 100)));
-
-        return riskAssessmentRepository.save(ra);
-    }
-
-    @Override
-    public RiskAssessment getByLoanRequestId(Long loanRequestId) {
-        return riskAssessmentRepository.findByLoanRequestId(loanRequestId)
-                .orElseThrow(() -> new BadRequestException("Risk not found"));
+        return "LOW_RISK";
     }
 }
