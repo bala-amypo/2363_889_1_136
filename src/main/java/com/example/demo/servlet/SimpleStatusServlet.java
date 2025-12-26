@@ -1,14 +1,20 @@
 package com.example.demo.servlet;
 
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.WebServlet;
-import java.io.IOException;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 
-@WebServlet("/status")
+import java.io.IOException;
+import java.io.PrintWriter;
+
 public class SimpleStatusServlet extends HttpServlet {
 
+    @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         resp.setContentType("text/plain");
-        resp.getWriter().write("SimpleStatusServlet OK");
+
+        PrintWriter writer = resp.getWriter();
+        writer.write("SimpleStatusServlet is running");
+        writer.flush();
     }
 }
