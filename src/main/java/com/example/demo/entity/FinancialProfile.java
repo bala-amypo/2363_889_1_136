@@ -3,82 +3,66 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "financial_profiles")
-public class FinancialProfile {
+@Table(name = "eligibility_results")
+public class EligibilityResult {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔗 Link to User
-    @OneToOne
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
-
-    // 💰 Monthly income
+    // 🔗 Loan Request reference
     @Column(nullable = false)
-    private double monthlyIncome;
+    private Long loanRequestId;
 
-    // 💳 Existing EMI (VERY IMPORTANT)
+    // ✅ Eligible or not
     @Column(nullable = false)
-    private double emi;
+    private boolean eligible;
 
-    // 🏦 Credit score
-    @Column(nullable = false)
-    private int creditScore;
+    // 💰 Max EMI allowed
+    private double maxAllowedEmi;
 
-    // ✅ REQUIRED: Default constructor (Spring/JPA)
-    public FinancialProfile() {
+    // 🧮 Calculated EMI
+    private double calculatedEmi;
+
+    // Required by JPA
+    public EligibilityResult() {
     }
 
-    // Optional constructor
-    public FinancialProfile(User user, double monthlyIncome, double emi, int creditScore) {
-        this.user = user;
-        this.monthlyIncome = monthlyIncome;
-        this.emi = emi;
-        this.creditScore = creditScore;
-    }
-
-    // -------------------- GETTERS & SETTERS --------------------
+    // ---------------- GETTERS & SETTERS ----------------
 
     public Long getId() {
         return id;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public Long getLoanRequestId() {
+        return loanRequestId;
     }
 
-    public User getUser() {
-        return user;
+    public void setLoanRequestId(Long loanRequestId) {
+        this.loanRequestId = loanRequestId;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public boolean isEligible() {
+        return eligible;
     }
 
-    public double getMonthlyIncome() {
-        return monthlyIncome;
+    public void setEligible(boolean eligible) {
+        this.eligible = eligible;
     }
 
-    public void setMonthlyIncome(double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
+    public double getMaxAllowedEmi() {
+        return maxAllowedEmi;
     }
 
-    // 🔥 THIS FIXES ALL EMI-RELATED ERRORS
-    public double getEmi() {
-        return emi;
+    public void setMaxAllowedEmi(double maxAllowedEmi) {
+        this.maxAllowedEmi = maxAllowedEmi;
     }
 
-    public void setEmi(double emi) {
-        this.emi = emi;
+    public double getCalculatedEmi() {
+        return calculatedEmi;
     }
 
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
+    public void setCalculatedEmi(double calculatedEmi) {
+        this.calculatedEmi = calculatedEmi;
     }
 }
