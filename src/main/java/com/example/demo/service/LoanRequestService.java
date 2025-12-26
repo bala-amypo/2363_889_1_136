@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface LoanRequestService {
 
-    LoanRequest submitRequest(LoanRequest request);
+    LoanRequest submitLoanRequest(LoanRequest request);
+
+    List<LoanRequest> getRequestsByUser(Long userId);
 
     LoanRequest getRequestById(Long id);
-
-    List<LoanRequest> getAllRequests();
 }
