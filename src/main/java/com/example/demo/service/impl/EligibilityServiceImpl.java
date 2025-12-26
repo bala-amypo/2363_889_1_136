@@ -5,13 +5,13 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.*;
 import com.example.demo.service.EligibilityService;
 
-public class LoanEligibilityServiceImpl implements EligibilityService {
+public class EligibilityServiceImpl implements EligibilityService {
 
     private final LoanRequestRepository loanRequestRepository;
     private final FinancialProfileRepository financialProfileRepository;
     private final EligibilityResultRepository eligibilityResultRepository;
 
-    public LoanEligibilityServiceImpl(
+    public EligibilityServiceImpl(
             LoanRequestRepository loanRequestRepository,
             FinancialProfileRepository financialProfileRepository,
             EligibilityResultRepository eligibilityResultRepository) {
