@@ -19,9 +19,19 @@ public class UserServiceImpl implements UserService {
         return repository.save(user);
     }
 
+    // ✅ Method expected by TEST
+    public User register(User user) {
+        return registerUser(user);
+    }
+
     @Override
     public User getUserById(Long id) {
         return repository.findById(id).orElse(null);
+    }
+
+    // ✅ Method expected by TEST
+    public User getById(Long id) {
+        return getUserById(id);
     }
 
     @Override
