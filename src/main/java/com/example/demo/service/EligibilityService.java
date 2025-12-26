@@ -1,10 +1,8 @@
 package com.example.demo.service;
 
-import com.example.demo.entity.EligibilityResult;
+import com.example.demo.entity.Eligibility;
 
 public interface EligibilityService {
 
-    EligibilityResult evaluateEligibility(Long loanRequestId);
-
-    EligibilityResult getByLoanRequestId(Long loanRequestId);
+    Eligibility getByLoanRequestId(Long loanRequestId);
 }
