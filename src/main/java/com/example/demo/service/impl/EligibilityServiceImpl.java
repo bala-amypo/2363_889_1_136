@@ -25,7 +25,7 @@ public class EligibilityServiceImpl implements EligibilityService {
         EligibilityResult result = new EligibilityResult();
         result.setLoanRequestId(loanRequestId);
         result.setEligible(true);
-        result.setMaxEligibleAmount(500000);
+        result.setMaxEligibleAmount(500000.0);
         return repository.save(result);
     }
 }
