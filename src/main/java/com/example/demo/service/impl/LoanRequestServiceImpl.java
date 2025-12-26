@@ -11,28 +11,27 @@ import java.util.List;
 @Service
 public class LoanRequestServiceImpl implements LoanRequestService {
 
-    private final LoanRequestRepository loanRequestRepository;
+    private final LoanRequestRepository repository;
 
-    public LoanRequestServiceImpl(LoanRequestRepository loanRequestRepository) {
-        this.loanRequestRepository = loanRequestRepository;
+    public LoanRequestServiceImpl(LoanRequestRepository repository) {
+        this.repository = repository;
     }
 
     @Override
     public LoanRequest submitLoanRequest(LoanRequest request) {
-
-        request.setStatus(LoanRequest.Status.SUBMITTED);
-
+        request.setStatus(LoanRequest.Status.PENDING);
         request.setSubmittedAt(LocalDateTime.now());
-        return loanRequestRepository.save(request);
+        return repository.save(request);
     }
 
     @Override
     public List<LoanRequest> getRequestsByUser(Long userId) {
-        return loanRequestRepository.findByUserId(userId);
+        return repository.findByUser_Id(userId);
     }
 
     @Override
     public LoanRequest getRequestById(Long id) {
-        return loanRequestRepository.findById(id).orElse(null);
+        return repository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Loan request not found"));
     }
 }
