@@ -1,66 +1,34 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "financial_profiles")
 public class FinancialProfile {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
-    private double monthlyIncome;
-
-    private double emi;   // existing EMI
-
+    private double monthlyExpenses;
+    private double existingLoanEmi;
+    private double savingsBalance;
     private int creditScore;
 
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    private LocalDateTime lastUpdatedAt;
 
-    // ---------- REQUIRED GETTERS ----------
+    public double getMonthlyExpenses() { return monthlyExpenses; }
+    public void setMonthlyExpenses(double v) { this.monthlyExpenses = v; }
 
-    public Long getId() {
-        return id;
-    }
+    public double getExistingLoanEmi() { return existingLoanEmi; }
+    public void setExistingLoanEmi(double v) { this.existingLoanEmi = v; }
 
-    public double getMonthlyIncome() {
-        return monthlyIncome;
-    }
+    public double getSavingsBalance() { return savingsBalance; }
+    public void setSavingsBalance(double v) { this.savingsBalance = v; }
 
-    public double getEmi() {
-        return emi;
-    }
+    public int getCreditScore() { return creditScore; }
+    public void setCreditScore(int v) { this.creditScore = v; }
 
-    public int getCreditScore() {
-        return creditScore;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    // ---------- SETTERS ----------
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setMonthlyIncome(double monthlyIncome) {
-        this.monthlyIncome = monthlyIncome;
-    }
-
-    public void setEmi(double emi) {
-        this.emi = emi;
-    }
-
-    public void setCreditScore(int creditScore) {
-        this.creditScore = creditScore;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
+    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
+    public void setLastUpdatedAt(LocalDateTime t) { this.lastUpdatedAt = t; }
 }

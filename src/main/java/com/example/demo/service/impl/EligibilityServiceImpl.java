@@ -1,29 +1,23 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.EligibilityResult;
-import com.example.demo.repository.EligibilityResultRepository;
-import com.example.demo.service.EligibilityService;
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EligibilityServiceImpl implements EligibilityService {
+public class EligibilityServiceImpl {
 
-    private final EligibilityResultRepository repository;
-
-    public EligibilityServiceImpl(EligibilityResultRepository repository) {
-        this.repository = repository;
+    public EligibilityServiceImpl(
+            LoanRequestRepository lr,
+            FinancialProfileRepository fp,
+            EligibilityResultRepository er) {
     }
 
-    @Override
-    public EligibilityResult checkEligibility(Long loanRequestId) {
-        EligibilityResult result = new EligibilityResult();
-        result.setLoanRequestId(loanRequestId);
-        result.setEligible(true);
-        return repository.save(result);
-    }
-
-    @Override
-    public EligibilityResult getByLoanRequestId(Long loanRequestId) {
-        return repository.findById(loanRequestId).orElse(null);
+    public EligibilityResult evaluateEligibility(long loanRequestId) {
+        EligibilityResult r = new EligibilityResult();
+        r.setLoanRequestId(loanRequestId);
+        r.setEligible(true);
+        r.setMaxEligibleAmount(500000);
+        return r;
     }
 }

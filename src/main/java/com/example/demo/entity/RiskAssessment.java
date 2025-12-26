@@ -6,34 +6,23 @@ import jakarta.persistence.*;
 public class RiskAssessment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue
     private Long id;
 
     private Long loanRequestId;
-
+    private double riskScore;
+    private double dtiRatio;
     private String riskLevel;
 
-    public Long getId() {
-        return id;
-    }
+    public double getRiskScore() { return riskScore; }
+    public void setRiskScore(double v) { this.riskScore = v; }
 
-    public Long getLoanRequestId() {
-        return loanRequestId;
-    }
+    public double getDtiRatio() { return dtiRatio; }
+    public void setDtiRatio(double v) { this.dtiRatio = v; }
 
-    public String getRiskLevel() {
-        return riskLevel;
-    }
+    public String getRiskLevel() { return riskLevel; }
+    public void setRiskLevel(String v) { this.riskLevel = v; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
-    }
-
-    public void setRiskLevel(String riskLevel) {
-        this.riskLevel = riskLevel;
-    }
+    public Long getLoanRequestId() { return loanRequestId; }
+    public void setLoanRequestId(Long id) { this.loanRequestId = id; }
 }
