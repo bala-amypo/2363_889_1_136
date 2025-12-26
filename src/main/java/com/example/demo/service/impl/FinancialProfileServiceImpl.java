@@ -4,6 +4,7 @@ import com.example.demo.entity.FinancialProfile;
 import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FinancialProfileService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -11,12 +12,13 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
 
     private final FinancialProfileRepository repository;
 
-    // ✅ Constructor required by Spring
+    // ✅ THIS constructor is used by SPRING
+    @Autowired
     public FinancialProfileServiceImpl(FinancialProfileRepository repository) {
         this.repository = repository;
     }
 
-    // ✅ Constructor required by TEST CASE
+    // ✅ THIS constructor is used by TEST CASES
     public FinancialProfileServiceImpl(FinancialProfileRepository repository,
                                        UserRepository userRepository) {
         this.repository = repository;
@@ -27,7 +29,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         return repository.save(profile);
     }
 
-    // ✅ Method expected by TEST
+    // ✅ test compatibility
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
         return createOrUpdateProfile(profile);
     }
@@ -37,7 +39,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         return repository.findByUserId(userId).orElse(null);
     }
 
-    // ✅ Method expected by TEST
+    // ✅ test compatibility
     public FinancialProfile getByUserId(Long userId) {
         return getProfileByUser(userId);
     }
