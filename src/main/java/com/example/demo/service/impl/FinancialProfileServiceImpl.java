@@ -4,6 +4,7 @@ import com.example.demo.entity.FinancialProfile;
 import com.example.demo.repository.FinancialProfileRepository;
 import com.example.demo.repository.UserRepository;
 import com.example.demo.service.FinancialProfileService;
+
 import org.springframework.stereotype.Service;
 
 @Service
@@ -12,20 +13,23 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     private final FinancialProfileRepository repository;
     private final UserRepository userRepository;
 
-    // REQUIRED BY TEST (2 args!)
-    public FinancialProfileServiceImpl(FinancialProfileRepository repository,
-                                       UserRepository userRepository) {
+    // REQUIRED by tests (2-arg constructor)
+    public FinancialProfileServiceImpl(
+            FinancialProfileRepository repository,
+            UserRepository userRepository
+    ) {
         this.repository = repository;
         this.userRepository = userRepository;
     }
 
-    // REQUIRED BY TEST
+    // Used by tests
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
         return repository.save(profile);
     }
 
-    // REQUIRED BY TEST
-    public FinancialProfile getByUserId(long userId) {
+    // REQUIRED by FinancialProfileService interface
+    @Override
+    public FinancialProfile getProfileByUser(Long userId) {
         return repository.findByUserId(userId).orElse(null);
     }
 }
