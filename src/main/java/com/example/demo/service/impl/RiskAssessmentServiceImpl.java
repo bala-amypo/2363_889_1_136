@@ -5,8 +5,6 @@ import com.example.demo.exception.BadRequestException;
 import com.example.demo.repository.*;
 import com.example.demo.service.RiskAssessmentService;
 
-import java.util.Optional;
-
 public class RiskAssessmentServiceImpl implements RiskAssessmentService {
 
     private final LoanRequestRepository loanRequestRepository;
@@ -27,7 +25,7 @@ public class RiskAssessmentServiceImpl implements RiskAssessmentService {
     public RiskAssessment assessRisk(Long loanRequestId) {
 
         if (riskAssessmentRepository.findByLoanRequestId(loanRequestId).isPresent()) {
-            throw new BadRequestException("Risk already assessed");
+            throw new BadRequestException("Risk already exists");
         }
 
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
