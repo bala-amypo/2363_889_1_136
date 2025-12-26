@@ -4,15 +4,16 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
+@Table(name = "loan_requests")
 public class LoanRequest {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double amount;
+    private double amount;
 
-    private Integer tenure;
+    private int tenureMonths;
 
     private String status;
 
@@ -22,44 +23,41 @@ public class LoanRequest {
     @JoinColumn(name = "user_id")
     private User user;
 
-    // ===== GETTERS =====
+    // ---------- REQUIRED GETTERS ----------
 
     public Long getId() {
         return id;
     }
 
-    public Double getAmount() {
+    public double getAmount() {
         return amount;
     }
 
-    public Integer getTenure() {
-        return tenure;
-    }
-
-    public String getStatus() {
-        return status;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
+    public int getTenureMonths() {
+        return tenureMonths;
     }
 
     public User getUser() {
         return user;
     }
 
-    // ===== SETTERS (THIS FIXES YOUR ERROR) =====
+    // EMI calculation used in services
+    public double getEmi() {
+        return amount / tenureMonths;
+    }
+
+    // ---------- SETTERS ----------
 
     public void setId(Long id) {
         this.id = id;
     }
 
-    public void setAmount(Double amount) {
+    public void setAmount(double amount) {
         this.amount = amount;
     }
 
-    public void setTenure(Integer tenure) {
-        this.tenure = tenure;
+    public void setTenureMonths(int tenureMonths) {
+        this.tenureMonths = tenureMonths;
     }
 
     public void setStatus(String status) {
