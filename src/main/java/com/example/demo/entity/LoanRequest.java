@@ -6,43 +6,71 @@ import java.time.LocalDateTime;
 @Entity
 public class LoanRequest {
 
-    public enum Status {
-        PENDING, APPROVED, REJECTED
-    }
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne
-    private User user;
+    private Double amount;
 
-    private Double requestedAmount;
-    private Integer tenureMonths;
+    private Integer tenure;
+
     private String status;
+
     private LocalDateTime submittedAt;
 
-    public LoanRequest() {}
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @PrePersist
-    public void onSubmit() {
-        this.status = Status.PENDING.name();
-        this.submittedAt = LocalDateTime.now();
+    // ===== GETTERS =====
+
+    public Long getId() {
+        return id;
     }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public Double getAmount() {
+        return amount;
+    }
 
-    public User getUser() { return user; }
-    public void setUser(User user) { this.user = user; }
+    public Integer getTenure() {
+        return tenure;
+    }
 
-    public Double getRequestedAmount() { return requestedAmount; }
-    public void setRequestedAmount(Double requestedAmount) { this.requestedAmount = requestedAmount; }
+    public String getStatus() {
+        return status;
+    }
 
-    public Integer getTenureMonths() { return tenureMonths; }
-    public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
+    public LocalDateTime getSubmittedAt() {
+        return submittedAt;
+    }
 
-    public String getStatus() { return status; }
+    public User getUser() {
+        return user;
+    }
 
-    public LocalDateTime getSubmittedAt() { return submittedAt; }
+    // ===== SETTERS (THIS FIXES YOUR ERROR) =====
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setAmount(Double amount) {
+        this.amount = amount;
+    }
+
+    public void setTenure(Integer tenure) {
+        this.tenure = tenure;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public void setSubmittedAt(LocalDateTime submittedAt) {
+        this.submittedAt = submittedAt;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }
