@@ -22,6 +22,7 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
         this.userRepository = userRepository;
     }
 
+    @Override
     public FinancialProfile createOrUpdate(FinancialProfile profile) {
 
         Long userId = profile.getUser().getId();
@@ -44,7 +45,8 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
                 });
     }
 
-    public FinancialProfile getByUserId(long userId) {
+    @Override
+    public FinancialProfile getProfileByUser(Long userId) {
         return repository.findByUserId(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Profile not found"));
     }
