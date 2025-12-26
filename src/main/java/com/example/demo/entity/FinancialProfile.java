@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 public class FinancialProfile {
@@ -19,13 +19,16 @@ public class FinancialProfile {
     private Integer creditScore;
     private Double savingsBalance;
 
-    private Instant lastUpdatedAt = Instant.now();
+    private LocalDateTime lastUpdatedAt;
 
-    // ✅ EMPTY CONSTRUCTOR
-    public FinancialProfile() {
+    public FinancialProfile() {}
+
+    @PrePersist
+    @PreUpdate
+    public void updateTimestamp() {
+        this.lastUpdatedAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -47,6 +50,5 @@ public class FinancialProfile {
     public Double getSavingsBalance() { return savingsBalance; }
     public void setSavingsBalance(Double savingsBalance) { this.savingsBalance = savingsBalance; }
 
-    public Instant getLastUpdatedAt() { return lastUpdatedAt; }
-    public void setLastUpdatedAt(Instant lastUpdatedAt) { this.lastUpdatedAt = lastUpdatedAt; }
+    public LocalDateTime getLastUpdatedAt() { return lastUpdatedAt; }
 }

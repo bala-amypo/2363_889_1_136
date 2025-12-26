@@ -1,10 +1,14 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
-import java.time.Instant;
+import java.time.LocalDateTime;
 
 @Entity
 public class LoanRequest {
+
+    public enum Status {
+        PENDING, APPROVED, REJECTED
+    }
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -15,16 +19,17 @@ public class LoanRequest {
 
     private Double requestedAmount;
     private Integer tenureMonths;
-    private String purpose;
+    private String status;
+    private LocalDateTime submittedAt;
 
-    private String status = "PENDING";
-    private Instant appliedAt = Instant.now();
+    public LoanRequest() {}
 
-    // ✅ EMPTY CONSTRUCTOR
-    public LoanRequest() {
+    @PrePersist
+    public void onSubmit() {
+        this.status = Status.PENDING.name();
+        this.submittedAt = LocalDateTime.now();
     }
 
-    // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -37,12 +42,7 @@ public class LoanRequest {
     public Integer getTenureMonths() { return tenureMonths; }
     public void setTenureMonths(Integer tenureMonths) { this.tenureMonths = tenureMonths; }
 
-    public String getPurpose() { return purpose; }
-    public void setPurpose(String purpose) { this.purpose = purpose; }
-
     public String getStatus() { return status; }
-    public void setStatus(String status) { this.status = status; }
 
-    public Instant getAppliedAt() { return appliedAt; }
-    public void setAppliedAt(Instant appliedAt) { this.appliedAt = appliedAt; }
+    public LocalDateTime getSubmittedAt() { return submittedAt; }
 }
