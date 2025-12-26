@@ -6,29 +6,43 @@ import java.time.LocalDateTime;
 @Entity
 public class LoanRequest {
 
+    public enum Status {
+        PENDING, APPROVED, REJECTED
+    }
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private double requestedAmount;
+    @ManyToOne
+    private User user;
 
-    @Enumerated(EnumType.STRING)
-    private Status status;
+    private Double requestedAmount;
+
+    private Integer tenureMonths;
+
+    private String status;
 
     private LocalDateTime submittedAt;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    // ✅ Constructor default (tests rely on this)
+    public LoanRequest() {
+        this.status = Status.PENDING.name();
+        this.submittedAt = LocalDateTime.now();
+    }
 
-    // ===== ENUM (THIS FIXES YOUR ERROR) =====
-    public enum Status {
-        PENDING,
-        APPROVED,
-        REJECTED
+    @PrePersist
+    public void prePersist() {
+        if (status == null) {
+            status = Status.PENDING.name();
+        }
+        if (submittedAt == null) {
+            submittedAt = LocalDateTime.now();
+        }
     }
 
     // ===== GETTERS & SETTERS =====
+
     public Long getId() {
         return id;
     }
@@ -37,35 +51,44 @@ public class LoanRequest {
         this.id = id;
     }
 
-    public double getRequestedAmount() {
-        return requestedAmount;
-    }
-
-    public void setRequestedAmount(double requestedAmount) {
-        this.requestedAmount = requestedAmount;
-    }
-
-    public Status getStatus() {
-        return status;
-    }
-
-    public void setStatus(Status status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getSubmittedAt() {
-        return submittedAt;
-    }
-
-    public void setSubmittedAt(LocalDateTime submittedAt) {
-        this.submittedAt = submittedAt;
-    }
-
     public User getUser() {
         return user;
     }
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Double getRequestedAmount() {
+        return requestedAmount;
+    }
+
+    public void setRequestedAmount(Double requestedAmount) {
+        this.requestedAmount = requestedAmount;
+    }
+
+    public Integer getTenureMonths() {
+        return tenureMonths;
+    }
+
+    public void setTenureMonths(Integer tenureMonths) {
+        this.tenureMonths = tenureMonths;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    // ✅ THIS WAS MISSING (caused compile error)
+    public LocalDateTime getSubmittedAt() {
+        return submittedAt;
+    }
+
+    public void setSubmittedAt(LocalDateTime submittedAt) {
+        this.submittedAt = submittedAt;
     }
 }
