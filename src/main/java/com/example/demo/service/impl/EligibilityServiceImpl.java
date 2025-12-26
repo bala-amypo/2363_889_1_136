@@ -1,10 +1,16 @@
 package com.example.demo.service.impl;
 
-import com.example.demo.entity.*;
+import com.example.demo.entity.EligibilityResult;
+import com.example.demo.entity.FinancialProfile;
+import com.example.demo.entity.LoanRequest;
 import com.example.demo.exception.BadRequestException;
-import com.example.demo.repository.*;
+import com.example.demo.repository.EligibilityResultRepository;
+import com.example.demo.repository.FinancialProfileRepository;
+import com.example.demo.repository.LoanRequestRepository;
 import com.example.demo.service.EligibilityService;
+import org.springframework.stereotype.Service;
 
+@Service
 public class EligibilityServiceImpl implements EligibilityService {
 
     private final LoanRequestRepository loanRequestRepository;
@@ -15,7 +21,6 @@ public class EligibilityServiceImpl implements EligibilityService {
             LoanRequestRepository loanRequestRepository,
             FinancialProfileRepository financialProfileRepository,
             EligibilityResultRepository eligibilityResultRepository) {
-
         this.loanRequestRepository = loanRequestRepository;
         this.financialProfileRepository = financialProfileRepository;
         this.eligibilityResultRepository = eligibilityResultRepository;
@@ -29,14 +34,14 @@ public class EligibilityServiceImpl implements EligibilityService {
         }
 
         LoanRequest loanRequest = loanRequestRepository.findById(loanRequestId)
-                .orElseThrow(() -> new BadRequestException("Loan not found"));
+                .orElseThrow(() -> new BadRequestException("Loan request not found"));
 
-        FinancialProfile fp = financialProfileRepository
+        FinancialProfile profile = financialProfileRepository
                 .findByUserId(loanRequest.getUser().getId())
-                .orElseThrow(() -> new BadRequestException("Profile not found"));
+                .orElseThrow(() -> new BadRequestException("Financial profile not found"));
 
-        double income = fp.getMonthlyIncome() != null ? fp.getMonthlyIncome() : 0.0;
-        double expenses = fp.getMonthlyExpenses() != null ? fp.getMonthlyExpenses() : 0.0;
+        double income = profile.getMonthlyIncome() != null ? profile.getMonthlyIncome() : 0.0;
+        double expenses = profile.getMonthlyExpenses() != null ? profile.getMonthlyExpenses() : 0.0;
 
         double eligibleAmount = Math.max(0, (income - expenses) * loanRequest.getTenureMonths());
 
