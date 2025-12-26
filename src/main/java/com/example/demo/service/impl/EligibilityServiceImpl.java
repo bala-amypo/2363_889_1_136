@@ -17,23 +17,19 @@ public class EligibilityServiceImpl implements EligibilityService {
 
         EligibilityResult result = new EligibilityResult();
 
-        // Example EMI calculation (simple)
-        double emi = loanRequest.getEmi();
+        double emi = loanRequest.getAmount() / loanRequest.getTenureMonths();
         double maxAllowedEmi = profile.getMonthlyIncome() * 0.4;
 
         result.setLoanRequestId(loanRequest.getId());
         result.setCalculatedEmi(emi);
         result.setMaxAllowedEmi(maxAllowedEmi);
-
-        boolean eligible = (emi + profile.getEmi()) <= maxAllowedEmi;
-        result.setEligible(eligible);
+        result.setEligible((emi + profile.getEmi()) <= maxAllowedEmi);
 
         return result;
     }
 
     @Override
     public EligibilityResult getByLoanRequestId(Long loanRequestId) {
-        // For now, return null or throw exception if not required by test
         return null;
     }
 }

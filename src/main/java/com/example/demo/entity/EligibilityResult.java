@@ -9,19 +9,44 @@ public class EligibilityResult {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToOne
-    private LoanRequest loanRequest;
+    private Long loanRequestId;
+    private boolean eligible;
+    private double calculatedEmi;
+    private double maxAllowedEmi;
 
-    private Double maxEligibleAmount;
+    public Long getId() {
+        return id;
+    }
 
-    public EligibilityResult() {}
+    public Long getLoanRequestId() {
+        return loanRequestId;
+    }
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public void setLoanRequestId(Long loanRequestId) {
+        this.loanRequestId = loanRequestId;
+    }
 
-    public LoanRequest getLoanRequest() { return loanRequest; }
-    public void setLoanRequest(LoanRequest loanRequest) { this.loanRequest = loanRequest; }
+    public boolean isEligible() {
+        return eligible;
+    }
 
-    public Double getMaxEligibleAmount() { return maxEligibleAmount; }
-    public void setMaxEligibleAmount(Double maxEligibleAmount) { this.maxEligibleAmount = maxEligibleAmount; }
+    public void setEligible(boolean eligible) {
+        this.eligible = eligible;
+    }
+
+    public double getCalculatedEmi() {
+        return calculatedEmi;
+    }
+
+    public void setCalculatedEmi(double calculatedEmi) {
+        this.calculatedEmi = calculatedEmi;
+    }
+
+    public double getMaxAllowedEmi() {
+        return maxAllowedEmi;
+    }
+
+    public void setMaxAllowedEmi(double maxAllowedEmi) {
+        this.maxAllowedEmi = maxAllowedEmi;
+    }
 }

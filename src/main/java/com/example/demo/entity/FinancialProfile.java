@@ -3,66 +3,43 @@ package com.example.demo.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(name = "eligibility_results")
-public class EligibilityResult {
+public class FinancialProfile {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // 🔗 Loan Request reference
-    @Column(nullable = false)
-    private Long loanRequestId;
+    private double monthlyIncome;
+    private double emi;
 
-    // ✅ Eligible or not
-    @Column(nullable = false)
-    private boolean eligible;
-
-    // 💰 Max EMI allowed
-    private double maxAllowedEmi;
-
-    // 🧮 Calculated EMI
-    private double calculatedEmi;
-
-    // Required by JPA
-    public EligibilityResult() {
-    }
-
-    // ---------------- GETTERS & SETTERS ----------------
+    @OneToOne
+    private User user;
 
     public Long getId() {
         return id;
     }
 
-    public Long getLoanRequestId() {
-        return loanRequestId;
+    public double getMonthlyIncome() {
+        return monthlyIncome;
     }
 
-    public void setLoanRequestId(Long loanRequestId) {
-        this.loanRequestId = loanRequestId;
+    public void setMonthlyIncome(double monthlyIncome) {
+        this.monthlyIncome = monthlyIncome;
     }
 
-    public boolean isEligible() {
-        return eligible;
+    public double getEmi() {
+        return emi;
     }
 
-    public void setEligible(boolean eligible) {
-        this.eligible = eligible;
+    public void setEmi(double emi) {
+        this.emi = emi;
     }
 
-    public double getMaxAllowedEmi() {
-        return maxAllowedEmi;
+    public User getUser() {
+        return user;
     }
 
-    public void setMaxAllowedEmi(double maxAllowedEmi) {
-        this.maxAllowedEmi = maxAllowedEmi;
-    }
-
-    public double getCalculatedEmi() {
-        return calculatedEmi;
-    }
-
-    public void setCalculatedEmi(double calculatedEmi) {
-        this.calculatedEmi = calculatedEmi;
+    public void setUser(User user) {
+        this.user = user;
     }
 }
