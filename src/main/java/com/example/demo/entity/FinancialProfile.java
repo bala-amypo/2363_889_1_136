@@ -12,7 +12,7 @@ public class FinancialProfile {
 
     @OneToOne
     @JoinColumn(name = "user_id", nullable = false)
-    private User user;   // ✅ THIS is the field name
+    private User user;  
 
     private double monthlyIncome;
     private double monthlyExpenses;

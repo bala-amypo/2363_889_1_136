@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface FinancialProfileRepository extends JpaRepository<FinancialProfile, Long> {
 
-    Optional<FinancialProfile> findByUserId(Long userId);
+    Optional<FinancialProfile> findByUser_Id(Long userId);
 }
