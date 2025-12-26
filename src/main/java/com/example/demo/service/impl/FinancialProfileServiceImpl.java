@@ -16,12 +16,12 @@ public class FinancialProfileServiceImpl implements FinancialProfileService {
     }
 
     @Override
-    public FinancialProfile createOrUpdateProfile(FinancialProfile profile) {
+    public FinancialProfile createOrUpdate(FinancialProfile profile) {
         return repository.save(profile);
     }
 
     @Override
-    public FinancialProfile getProfileByUser(Long userId) {
+    public FinancialProfile getByUser(Long userId) {
         return repository.findByUserId(userId)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Financial profile not found"));

@@ -18,12 +18,12 @@ public class LoanRequestServiceImpl implements LoanRequestService {
     }
 
     @Override
-    public LoanRequest submitLoanRequest(LoanRequest request) {
+    public LoanRequest submitRequest(LoanRequest request) {
         return repository.save(request);
     }
 
     @Override
-    public LoanRequest getRequestById(Long id) {
+    public LoanRequest getById(Long id) {
         return repository.findById(id)
                 .orElseThrow(() ->
                         new ResourceNotFoundException("Loan request not found"));
