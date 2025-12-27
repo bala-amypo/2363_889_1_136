@@ -36,29 +36,19 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
+public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
 
-        User user = userRepository.findByEmail(request.getEmail()).orElse(null);
+    authenticationManager.authenticate(
+            new UsernamePasswordAuthenticationToken(
+                    request.getEmail(),
+                    request.getPassword()
+            )
+    );
 
-        if (user == null || !encoder.matches(request.getPassword(), user.getPassword())) {
-            throw new RuntimeException("Invalid credentials");
-        }
+    UserDetails userDetails =
+            userDetailsService.loadUserByUsername(request.getEmail());
 
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("email", user.getEmail());
-        claims.put("role", user.getRole());
-        claims.put("userId", user.getId());
+    String token = jwtUtil.generateToken(userDetails);
 
-       String token = jwtUtil.generateToken(user.getEmail());
-
-        AuthResponse response = new AuthResponse(
-                token,
-                user.getId(),
-                user.getEmail(),
-                user.getRole(),
-                user.getFullName()
-        );
-
-        return ResponseEntity.ok(response);
-    }
+    return ResponseEntity.ok(new AuthResponse(token));
 }
