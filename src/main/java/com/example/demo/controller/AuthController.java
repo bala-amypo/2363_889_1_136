@@ -26,9 +26,11 @@ public class AuthController {
         this.jwtUtil = jwtUtil;
     }
 
+    // ✅ LOGIN API
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
 
+        // 1️⃣ Authenticate username & password
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -36,11 +38,14 @@ public class AuthController {
                 )
         );
 
+        // 2️⃣ Load user details
         UserDetails userDetails =
                 userDetailsService.loadUserByUsername(request.getEmail());
 
+        // 3️⃣ Generate JWT token
         String token = jwtUtil.generateToken(userDetails);
 
+        // 4️⃣ Return response
         return ResponseEntity.ok(new AuthResponse(token));
     }
 }
