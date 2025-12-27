@@ -10,32 +10,24 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/loan-requests")
 public class LoanRequestController {
+    private final LoanRequestService loanRequestService;
 
-    private final LoanRequestService service;
-
-    public LoanRequestController(LoanRequestService service) {
-        this.service = service;
+    public LoanRequestController(LoanRequestService loanRequestService) {
+        this.loanRequestService = loanRequestService;
     }
 
-    @PostMapping
+    @PostMapping("/")
     public ResponseEntity<LoanRequest> submit(@RequestBody LoanRequest request) {
-        return ResponseEntity.ok(service.submitRequest(request));
+        return ResponseEntity.ok(loanRequestService.submitRequest(request));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<List<LoanRequest>> getByUser(
-            @PathVariable Long userId) {
-        return ResponseEntity.ok(service.getRequestsByUser(userId));
+    public ResponseEntity<List<LoanRequest>> getByUser(@PathVariable Long userId) {
+        return ResponseEntity.ok(loanRequestService.getRequestsByUser(userId));
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<LoanRequest> getById(@PathVariable Long id) {
-        return ResponseEntity.ok(service.getById(id));
-    }
-
-    @GetMapping
-    public ResponseEntity<List<LoanRequest>> getAll() {
-        // Used only for Swagger browsing
-        return ResponseEntity.ok(service.getRequestsByUser(null));
+        return ResponseEntity.ok(loanRequestService.getById(id));
     }
 }

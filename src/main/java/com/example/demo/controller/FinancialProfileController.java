@@ -8,22 +8,19 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/financial-profiles")
 public class FinancialProfileController {
+    private final FinancialProfileService profileService;
 
-    private final FinancialProfileService service;
-
-    public FinancialProfileController(FinancialProfileService service) {
-        this.service = service;
+    public FinancialProfileController(FinancialProfileService profileService) {
+        this.profileService = profileService;
     }
 
-    @PostMapping
-    public ResponseEntity<FinancialProfile> createOrUpdate(
-            @RequestBody FinancialProfile profile) {
-        return ResponseEntity.ok(service.createOrUpdate(profile));
+    @PostMapping("/")
+    public ResponseEntity<FinancialProfile> createOrUpdate(@RequestBody FinancialProfile profile) {
+        return ResponseEntity.ok(profileService.createOrUpdate(profile));
     }
 
     @GetMapping("/user/{userId}")
-    public ResponseEntity<FinancialProfile> getByUserId(
-            @PathVariable Long userId) {
-        return ResponseEntity.ok(service.getByUserId(userId));
+    public ResponseEntity<FinancialProfile> getByUserId(@PathVariable Long userId) {
+        return ResponseEntity.ok(profileService.getByUserId(userId));
     }
 }
